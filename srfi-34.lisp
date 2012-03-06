@@ -52,29 +52,6 @@
                   (lambda (condition)
                     (let ((var condition))      ; clauses may SET! var
                       (declare (ignorable var))
-                      (guard-aux (return-from k
-                                   (lambda ()
-                                     (raise var) ))
-                                 clause ***)))
-                  c)))
-           (lambda ()
-             (call-with-values
-              (lambda () e1 e2 ***)
-              (lambda args
-                (apply #'values args) )))))))))
-
-(define-syntax guard
-  (syntax-rules ()
-    ((guard (var clause ***) e1 e2 ***)
-     (with ((k (gensym "K-")))
-       (block k
-         (with-exception-handler
-             (lambda (c)
-               (return-from k
-                 (funcall
-                  (lambda (condition)
-                    (let ((var condition))      ; clauses may SET! var
-                      (declare (ignorable var))
                       (guard-aux (return-from k (raise var))
                                  clause ***)))
                   c)))
