@@ -2,14 +2,22 @@
 
 (cl:in-package :cl-user)
 
-(defpackage :srfi-34
+
+(defpackage "https://github.com/g000001/srfi-34"
   (:use)
   (:export
-   :with-exception-handler
-   :guard
-   :raise ))
+   with-exception-handler
+   guard
+   raise ))
 
-(defpackage :srfi-34.internal
-  (:use :srfi-34 :cl :fiveam :mbe)
-  (:shadowing-import-from :srfi-23 :error)
-  (:shadow :lambda :member :assoc :map :loop))
+
+(defpackage "https://github.com/g000001/srfi-34#internals"
+  (:use "https://github.com/g000001/srfi-34"
+        cl
+        fiveam mbe)
+  (:shadowing-import-from
+   "https://github.com/g000001/srfi-23" error)
+  (:shadow lambda member assoc map loop))
+
+
+;;; *EOF*

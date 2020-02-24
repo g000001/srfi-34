@@ -1,4 +1,8 @@
-* SRFI 34: Exception Handling for Programs
+# SRFI 34 for CL: Exception Handling for Programs
+
+* https://srfi.schemers.org/srfi-34
+* License: Unlicense
+
 - Copyright (C) Richard Kelsey, Michael Sperber (2002). All Rights Reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining

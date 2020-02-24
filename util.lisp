@@ -1,8 +1,9 @@
-(cl:in-package :srfi-34.internal)
+(cl:in-package "https://github.com/g000001/srfi-34#internals")
 
-(let ((eof (list nil)))
-  (defun eof ()
-    eof))
+
+(defun eof ()
+  (load-time-value (list nil)))
+
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (progn
@@ -45,37 +46,47 @@
     (setf (fdefinition 'exists) #'cl:some)
     ))
 
+
 (defun complex? (n)
   (numberp n))
+
 
 (defun exact->inexact (n)
   (float n 0d0))
 
+
 (defun exact? (n)
   (rationalp n))
 
+
 (defun inexact? (n)
   (floatp n))
+
 
 (defun list? (obj)
   (and (cl:listp obj)
        (cl:tailp '() obj)))
 
+
 (defmacro set! (var val)
   `(setq ,var ,val))
+
 
 (declaim (cl:inline list-tail vector-set! list-ref vector->list list->vector
                     quotient set-car! set-cdr! eqv?
                     assq assv assoc for-each memq))
 
+
 (defun eqv? (x y)
   (cl:eql x y))
+
 
 (defun member (item list)
   (cl:do ((e list (cdr e)))
        ((cl:atom e))
     (cl:when (cl:eql item (car e))
       (cl:return e))))
+
 
 (defun memq (item list)
   (cl:do ((e list (cdr e)))
@@ -88,44 +99,58 @@
   (cl:apply #'cl:mapc fn lists)
   nil)
 
+
 (defun assq (item alist)
   (cl:assoc item alist :test #'eq?))
+
 
 (defun assv (item alist)
   (cl:assoc item alist :test #'eqv?))
 
+
 (defun assoc (item alist)
   (cl:assoc item alist :test #'equal?))
+
 
 (defun equal? (x y)
   (cl:equal x y))
 
+
 (defun set-car! (list obj)
   (cl:rplaca list obj))
+
 
 (defun set-cdr! (cons x)
   (cl:rplacd cons x))
 
+
 (defun quotient (x y)
   (values (cl:truncate x y)))
+
 
 (defun list-tail (list k)
   (cl:nthcdr k list))
 
+
 (defun list-ref (list k)
   (cl:nth k list))
+
 
 (defun vector-set! (vec index val)
   (setf (cl:aref vec index) val))
 
+
 (defun string-set! (str index val)
   (setf (cl:char str index) val))
+
 
 (defun vector->list (vec)
   (cl:coerce vec 'list))
 
+
 (defun list->vector (list)
   (cl:coerce list 'cl:vector))
+
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defun to-proper-lambda-list (list)
@@ -139,9 +164,11 @@
                          ,(cdr last)))))
       (cl:symbol `(cl:&rest ,list)))))
 
+
 (defmacro lambda (args &rest body)
   `(cl:lambda ,(to-proper-lambda-list args)
      ,@body))
+
 
 (defmacro letrec ((&rest binds) &body body)
   `(let (,@(cl:mapcar (cl:lambda (x)
@@ -158,6 +185,7 @@
        (psetq ,@(cl:apply #'cl:append binds))
        ,@body )))
 
+
 (defmacro define-function (name-args &body body)
   (if (cl:consp name-args)
       (cl:destructuring-bind (name . args)
@@ -171,31 +199,48 @@
          (setf (fdefinition ',name-args)
                ,(car body) ))))
 
+
 (declaim (inline vector-ref))
+
+
 (defun vector-ref (vec k)
   (cl:svref vec k))
 
+
 (declaim (inline modulo))
+
+
 (defun modulo (x y)
   (cl:mod x y))
+
 
 (defmacro begin (&body body)
   `(progn ,@body))
 
+
 (declaim (inline make-vector))
+
+
 (defun make-vector (size &optional (init 0))
   (cl:make-array size                   ;***
                  :initial-element init
                  :adjustable nil
                  :fill-pointer nil))
 
+
 (declaim (inline string-append))
+
+
 (defun string-append (&rest strings)
   (cl:format nil "~{~A~}" strings))
 
+
 (declaim (inline number->string))
+
+
 (defun number->string (num)
   (cl:write-to-string num))
+
 
 (defmacro dolex ((&rest varlist) endlist &body body)
   (let* ((vars (cl:mapcar (lambda (v)
@@ -232,6 +277,7 @@
                   `(labels (,@defs)
                      ,@body )))))
 
+
 (defmacro with-local-define-variable (&body defines-body)
   (or (cl:member :in defines-body) (error "no body"))
   (let* ((body-pos (cl:position :in defines-body))
@@ -247,12 +293,14 @@
                      (cl:psetq ,@setqs)
                      ,@body )))))
 
+
 (defun boolean? (obj)
   (cl:typep obj '(cl:member cl:t cl:nil)))
 
 
 (defun eof-object? (obj)
   (eq obj (eof)))
+
 
 (defmacro iterate (tag specs &body body)
   (let ((vars  (mapcar #'car specs))
@@ -272,6 +320,7 @@
              (let ,(mapcar #'list vars dvars)
                (return-from ,id (progn ,@body)))))))))
 
+
 (defun dynamic-wind (in body out)
   (declare (function in body out))
   (funcall in)
@@ -282,4 +331,5 @@
 (defun call-with-values (producer consumer)
   (multiple-value-call consumer (funcall producer)))
 
-;;; eof
+
+;;; *EOF*

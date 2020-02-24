@@ -1,17 +1,20 @@
-(cl:in-package :srfi-34.internal)
+(cl:in-package "https://github.com/g000001/srfi-34#internals")
 
-(def-suite srfi-34)
 
-(in-suite srfi-34)
+(def-suite* srfi-34)
+
 
 (defmacro progn-with-output-to-string ((out) &body body)
-  `(let ((,out (make-string-output-stream)))
-     (list
-      (progn ,@body)
-      (get-output-stream-string ,out))))
+  `(with-standard-io-syntax
+     (let ((,out (make-string-output-stream)))
+       (list
+        (progn ,@body)
+        (get-output-stream-string ,out)))))
+
 
 (defmacro isqu (x y)
   `(is (equal ,x ,y)))
+
 
 (test with-exception-handler
   ;;
@@ -99,3 +102,6 @@
                    ((negative? condition) 'negative) )
                   (raise 0) )))))
    '(ZERO "reraised 0") ))
+
+
+;;; *EOF*
